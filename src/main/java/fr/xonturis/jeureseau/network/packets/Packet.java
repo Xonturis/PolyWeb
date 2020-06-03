@@ -1,4 +1,4 @@
-package fr.xonturis.jeureseau.network;
+package fr.xonturis.jeureseau.network.packets;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,7 @@ public class Packet implements Serializable {
         this.data = new HashMap<>();
     }
 
-    public Packet setObject(@NotNull String key, Object value) {
+    public Packet setObject(@NotNull String key, Serializable value) {
         this.data.put(key, value);
         return this;
     }

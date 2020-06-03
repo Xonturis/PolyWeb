@@ -1,16 +1,19 @@
 package fr.xonturis.jeureseau.model.impl;
 
+import fr.xonturis.jeureseau.Util.GameLogger;
+import fr.xonturis.jeureseau.network.client.GameSocketClient;
 import org.jetbrains.annotations.Nullable;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Created by Xonturis on 5/29/2020.
  */
 @NoArgsConstructor
-public class Board {
+public class Board implements Serializable {
 
     private final Pawn[][] BOARD = new Pawn[5][5];
 
@@ -89,7 +92,7 @@ public class Board {
     }
 
     public void addPawn(Pawn pawn) {
-        BOARD[pawn.getX()][pawn.getY()] = pawn;
+        BOARD[pawn.getY()][pawn.getX()] = pawn;
     }
 
     @Nullable
@@ -99,5 +102,29 @@ public class Board {
                 if (pawn.getUuid().equals(uuid))
                     return pawn;
         return null;
+    }
+
+    public void printBoard() {
+        // Print x axis
+        String playerColor = GameSocketClient.getINSTANCE().getClientPlayerSocket().getPlayer().getColor();
+        GameLogger.log(playerColor + "Ceci est votre couleur" + "\u001B[0m");
+        GameLogger.log("    0 1 2 3 4");
+
+        // Print actual board
+        GameLogger.log("   +=+=+=+=+=+");
+        for (int i = 0; i < BOARD.length; i++) {
+            StringBuilder line = new StringBuilder(" " + i + " |");
+            for (int j = 0; j < BOARD[i].length; j++) {
+                Pawn pawn = BOARD[i][j];
+                if (pawn == null) {
+                    line.append(" |");
+                    continue;
+                } else {
+                    line.append(pawn.getOwner().getColor()).append("x").append("\u001B[0m").append("|");
+                }
+            }
+            GameLogger.log(line.toString());
+            GameLogger.log("   +=+=+=+=+=+");
+        }
     }
 }

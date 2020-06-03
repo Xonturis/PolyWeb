@@ -2,8 +2,8 @@ package fr.xonturis.jeureseau.network.server;
 
 import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Player;
-import fr.xonturis.jeureseau.network.NetworkHandler;
-import fr.xonturis.jeureseau.network.Packet;
+import fr.xonturis.jeureseau.network.packets.NetworkHandler;
+import fr.xonturis.jeureseau.network.packets.Packet;
 import fr.xonturis.jeureseau.network.PlayerSocket;
 import lombok.Getter;
 import lombok.Setter;

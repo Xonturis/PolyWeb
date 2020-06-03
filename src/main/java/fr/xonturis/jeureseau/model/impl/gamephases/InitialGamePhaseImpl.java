@@ -1,5 +1,6 @@
 package fr.xonturis.jeureseau.model.impl.gamephases;
 
+import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Game;
 import fr.xonturis.jeureseau.model.GamePhase;
 import fr.xonturis.jeureseau.model.Player;
@@ -19,6 +20,7 @@ public class InitialGamePhaseImpl extends GamePhase {
 
     @Override
     public void play() {
+        GameLogger.log("InitialGamePhaseImpl play...");
         NeutronGameImpl game = (NeutronGameImpl) getParentGame();
         Board board = game.getBoard();
         Player playerOne = game.getPlayerOne();
@@ -34,6 +36,7 @@ public class InitialGamePhaseImpl extends GamePhase {
             board.addPawn(pawn);
         }
 
+        GameLogger.log("InitialGamePhaseImpl end...");
         game.nextGamePhase();
         game.playGamePhase();
     }

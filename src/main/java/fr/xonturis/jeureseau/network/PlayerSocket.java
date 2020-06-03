@@ -1,6 +1,7 @@
 package fr.xonturis.jeureseau.network;
 
 import fr.xonturis.jeureseau.model.Player;
+import fr.xonturis.jeureseau.network.packets.Packet;
 
 import java.net.Socket;
 

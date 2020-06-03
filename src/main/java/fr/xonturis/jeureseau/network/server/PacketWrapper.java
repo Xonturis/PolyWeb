@@ -1,6 +1,6 @@
 package fr.xonturis.jeureseau.network.server;
 
-import fr.xonturis.jeureseau.network.Packet;
+import fr.xonturis.jeureseau.network.packets.Packet;
 import fr.xonturis.jeureseau.network.PlayerSocket;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

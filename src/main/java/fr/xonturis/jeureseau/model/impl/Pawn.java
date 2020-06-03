@@ -1,18 +1,17 @@
 package fr.xonturis.jeureseau.model.impl;
 
 import fr.xonturis.jeureseau.model.Player;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Created by Xonturis on 5/29/2020.
  */
-public class Pawn {
+public class Pawn implements Serializable {
 
     @Getter
     private final Player owner;

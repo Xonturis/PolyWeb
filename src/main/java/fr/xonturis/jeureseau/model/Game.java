@@ -1,5 +1,6 @@
 package fr.xonturis.jeureseau.model;
 
+import fr.xonturis.jeureseau.Util.GameLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public abstract class Game implements Serializable {
     private int round;
 
     public Game() {
+        GameLogger.log("============= INIT GAME =============");
         this.gamePhases = new ArrayList<>();
         this.players = new ArrayList<>();
     }
@@ -54,15 +56,19 @@ public abstract class Game implements Serializable {
     }
 
     protected void startGame() {
-        this.gamePhases.get(0).start();
+        GameLogger.log("Starting game...");
+        this.actualGamePhase = this.gamePhases.get(0);
+        this.actualGamePhase.start();
+
     }
 
     public void playGamePhase() {
-        actualGamePhase.start();
+        GameLogger.log("Playing game phase...");
+        this.actualGamePhase.start();
     }
 
     public void nextGamePhase() {
-        actualGamePhase = gamePhases.get(gamePhases.indexOf(actualGamePhase) + 1);
+        this.actualGamePhase = this.gamePhases.get(this.gamePhases.indexOf(this.actualGamePhase) + 1);
     }
 
     public void endGame() {

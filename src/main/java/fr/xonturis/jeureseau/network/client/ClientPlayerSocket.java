@@ -2,8 +2,8 @@ package fr.xonturis.jeureseau.network.client;
 
 import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Player;
-import fr.xonturis.jeureseau.network.NetworkHandler;
-import fr.xonturis.jeureseau.network.Packet;
+import fr.xonturis.jeureseau.network.packets.NetworkHandler;
+import fr.xonturis.jeureseau.network.packets.Packet;
 import fr.xonturis.jeureseau.network.PlayerSocket;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -48,8 +48,6 @@ public class ClientPlayerSocket implements PlayerSocket, Runnable {
 
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         do {
-//            while (objectInputStream.available() == 0){Thread.sleep(10);}
-
             received = (Packet) objectInputStream.readObject();
             NetworkHandler.handle(this, received);
         } while (!received.getName().equals("stop"));

@@ -17,6 +17,9 @@ public abstract class Player implements Serializable {
     @Getter
     @Setter
     private UUID uuid;
+    @Setter
+    @Getter
+    private String color;
 
     public Player(String playerName) {
         this.playerName = playerName;

@@ -2,10 +2,10 @@ package fr.xonturis.jeureseau.network.client;
 
 import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Player;
-import fr.xonturis.jeureseau.network.Packet;
-import fr.xonturis.jeureseau.network.PacketHandler;
-import fr.xonturis.jeureseau.network.PacketType;
+import fr.xonturis.jeureseau.network.packets.PacketHandler;
+import fr.xonturis.jeureseau.network.packets.PacketType;
 import fr.xonturis.jeureseau.network.server.PacketWrapper;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -15,16 +15,24 @@ import java.net.Socket;
  */
 public class GameSocketClient extends PacketHandler {
 
-    private Socket socket = null;
+    @Getter
     private ClientPlayerSocket clientPlayerSocket;
-    private Player player;
+    private final Player player;
+
+    @Getter
+    private static GameSocketClient INSTANCE = null;
 
     public GameSocketClient(String address, int port, Player player) {
         super();
 
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Only one instance of GameSocketClient can run at the same time.");
+        }
+        INSTANCE = this;
+
         this.player = player;
         try {
-            socket = new Socket(address, port);
+            Socket socket = new Socket(address, port);
             this.clientPlayerSocket = new ClientPlayerSocket(socket, player);
             GameLogger.log("Connected");
         } catch (IOException ioException) {
@@ -38,7 +46,7 @@ public class GameSocketClient extends PacketHandler {
     @PacketType(packetName = "init")
     private void handleInitPacket(PacketWrapper packetWrapper) {
         GameLogger.log("Received init");
-        clientPlayerSocket.send(new Packet("init").setObject("player", player));
+        player.setColor((String) packetWrapper.getPacket().getObject("color"));
     }
 
 }

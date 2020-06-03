@@ -13,4 +13,8 @@ public class GameLogger {
         }
     }
 
+    public static void logStackTrace() {
+        Exception e = new Exception("Stack trace log");
+        e.printStackTrace();
+    }
 }

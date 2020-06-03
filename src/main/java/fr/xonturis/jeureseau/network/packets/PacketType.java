@@ -1,6 +1,4 @@
-package fr.xonturis.jeureseau.network;
-
-import lombok.Getter;
+package fr.xonturis.jeureseau.network.packets;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,6 +12,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface PacketType {
 
-    String packetName();
+    String packetName() default "";
+
+    String transactionName() default "";
 
 }
