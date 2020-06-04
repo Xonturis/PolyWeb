@@ -1,5 +1,6 @@
 package fr.xonturis.jeureseau.model.impl.game;
 
+import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Game;
 import fr.xonturis.jeureseau.model.Player;
 import fr.xonturis.jeureseau.model.impl.Board;
@@ -14,7 +15,7 @@ import lombok.Getter;
 public class NeutronGameImpl extends Game {
 
     @Getter
-    private final Board board;
+    private final Board board = new Board();
     @Getter
     private int roundNo = 0;
     @Getter
@@ -22,7 +23,6 @@ public class NeutronGameImpl extends Game {
 
     public NeutronGameImpl(Player playerOne, Player playerTwo) {
         super();
-        this.board = new Board();
         this.actualPlayer = playerOne;
         this.addPlayers(playerOne, playerTwo);
         this.addGamePhases(new InitialGamePhaseImpl(this), new RunningGamePhaseImpl(this), new EndGamePhaseImpl(this));
@@ -41,12 +41,13 @@ public class NeutronGameImpl extends Game {
     public void nextRound() {
         roundNo++;
         actualPlayer = players.get(roundNo % 2);
+        playGamePhase();
     }
 
     @Override
     public void errorGame() {
-        System.err.println("ERREUR, ACTION IMPOSSIBLE");
-        // ToDo implementer la fermeture des connexions
+        GameLogger.err("ERREUR, ACTION IMPOSSIBLE");
+        GameLogger.logStackTrace();
         System.exit(1);
     }
 }

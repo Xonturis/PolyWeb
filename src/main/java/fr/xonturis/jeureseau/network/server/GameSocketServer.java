@@ -2,10 +2,10 @@ package fr.xonturis.jeureseau.network.server;
 
 import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Player;
+import fr.xonturis.jeureseau.network.PlayerSocket;
 import fr.xonturis.jeureseau.network.packets.Packet;
 import fr.xonturis.jeureseau.network.packets.PacketHandler;
 import fr.xonturis.jeureseau.network.packets.PacketType;
-import fr.xonturis.jeureseau.network.PlayerSocket;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -14,6 +14,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Xonturis on 5/29/2020.
@@ -24,6 +26,9 @@ public class GameSocketServer extends PacketHandler {
 
     private ServerSocket serverSocket;
     private int neededNumberOfPlayers;
+
+    @Getter
+    private ExecutorService executor = Executors.newWorkStealingPool();
 
     @Getter
     private static GameSocketServer INSTANCE = null;
@@ -54,9 +59,7 @@ public class GameSocketServer extends PacketHandler {
                 try {
                     Socket socket = serverSocket.accept();
                     ServerPlayerSocket serverPlayerSocket = new ServerPlayerSocket(socket);
-//            clients.add(serverPlayerSocket);
-                    Thread thread = new Thread(serverPlayerSocket);
-                    thread.start();
+                    executor.execute(serverPlayerSocket);
                     GameLogger.log("Successfully added new connection");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -79,7 +82,7 @@ public class GameSocketServer extends PacketHandler {
         Player player = (Player) packetWrapper.getPacket().getObject("player");
         player.setColor(color);
         serverPlayerSocket.setPlayer(player);
-        serverPlayerSocket.send(new Packet("init").setObject("color", color));
+        serverPlayerSocket.send(new Packet("init").setObject("color", color).setObject("uuid", player.getUuid()));
         clients.add(serverPlayerSocket);
     }
 

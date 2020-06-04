@@ -10,10 +10,16 @@ import fr.xonturis.jeureseau.network.server.PacketWrapper;
  */
 public class PrintBoardPacketHandler extends PacketHandler {
 
-    @PacketType(packetName = "printBoard")
+    @PacketType(packetName = "printClientBoard")
     private void printBoard(PacketWrapper packetWrapper) {
+        clearScreen();
         Board board = (Board) packetWrapper.getPacket().getObject("board");
-        board.printBoard();
+        board.printClientBoard();
+    }
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
 }

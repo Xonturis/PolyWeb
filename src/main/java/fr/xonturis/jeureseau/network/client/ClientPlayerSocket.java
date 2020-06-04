@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Created by Xonturis on 5/31/2020.
@@ -44,13 +45,23 @@ public class ClientPlayerSocket implements PlayerSocket, Runnable {
         this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
         send(new Packet("init").setObject("player", player));
-        GameLogger.log("Sent init");
+        GameLogger.debug("Sent init");
 
         objectInputStream = new ObjectInputStream(socket.getInputStream());
         do {
-            received = (Packet) objectInputStream.readObject();
-            NetworkHandler.handle(this, received);
-        } while (!received.getName().equals("stop"));
+            try {
+                received = (Packet) objectInputStream.readObject();
+                NetworkHandler.handle(this, received);
+            } catch (SocketException socketException) {
+                if (socketException.getMessage().equals("Connection reset") || socketException.getMessage().equals("socket closed")) {
+                    GameLogger.info("Le serveur ferme !!");
+                    Thread.sleep(1000);
+                    System.exit(1);
+                } else {
+                    socketException.printStackTrace();
+                }
+            }
+        } while (true);
     }
 
     @SneakyThrows

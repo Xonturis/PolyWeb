@@ -1,5 +1,6 @@
 package fr.xonturis.jeureseau.model.impl;
 
+import fr.xonturis.jeureseau.Util.AnsiColors;
 import fr.xonturis.jeureseau.model.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +15,15 @@ import java.util.UUID;
 public class Pawn implements Serializable {
 
     @Getter
-    private final Player owner;
+    private Player owner;
     @Getter
-    private final UUID uuid = UUID.randomUUID();
+    private UUID uuid = UUID.randomUUID();
     @Getter
     @Setter
     private Point position;
+
+    public Pawn() {
+    }
 
     public Pawn(Player owner, Point position) {
         this.owner = owner;
@@ -42,4 +46,24 @@ public class Pawn implements Serializable {
         position.y = y;
     }
 
+    public boolean isOwner(Player player) {
+        return player.equals(this.owner);
+    }
+
+    @Override
+    public String toString() {
+        return "Pawn{" +
+                "owner=" + owner +
+                ", uuid=" + uuid +
+                ", position=" + position +
+                '}';
+    }
+
+    public String getColor() {
+        return getOwner() == null ? AnsiColors.ANSI_BLUE : getOwner().getColor();
+    }
+
+    public boolean isNeutron() {
+        return getOwner() == null;
+    }
 }

@@ -1,9 +1,10 @@
 package fr.xonturis.jeureseau.model.impl;
 
+import fr.xonturis.jeureseau.Util.AnsiColors;
 import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.network.client.GameSocketClient;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -12,21 +13,41 @@ import java.util.UUID;
 /**
  * Created by Xonturis on 5/29/2020.
  */
-@NoArgsConstructor
 public class Board implements Serializable {
 
-    private final Pawn[][] BOARD = new Pawn[5][5];
+    private Pawn[][] BOARD;
+    @Getter
+    private int rev;
+
+    public Board(Board board) {
+        this.BOARD = new Pawn[5][5];
+
+        for (int i = 0; i < board.BOARD.length; i++) {
+            for (int j = 0; j < board.BOARD[i].length; j++) {
+                this.BOARD[i][j] = board.BOARD[i][j];
+            }
+        }
+
+        this.rev = board.rev;
+    }
+
+    public Board() {
+        this.BOARD = new Pawn[5][5];
+        this.rev = 0;
+    }
 
     @Nullable
-    private Pawn getPawn(int x, int y) {
-        return BOARD[x][y];
+    public Pawn getPawn(int x, int y) {
+        return BOARD[y][x];
     }
 
     public void movePawn(Pawn pawn, Direction direction) {
         Point nextPoint = getNextPoint(pawn, direction);
+        BOARD[pawn.getY()][pawn.getX()] = null;
+
         pawn.setPosition(nextPoint);
-        BOARD[(int) nextPoint.getX()][(int) nextPoint.getY()] = pawn;
-        BOARD[pawn.getX()][pawn.getY()] = null;
+        BOARD[pawn.getY()][pawn.getX()] = pawn;
+        rev++;
     }
 
     public boolean canMovePawn(Pawn pawn, Direction direction) {
@@ -35,7 +56,7 @@ public class Board implements Serializable {
     }
 
     private Point getNextPoint(Pawn origin, Direction direction) {
-        Point nextPoint = null;
+        Point nextPoint;
 
         int incrX = direction.getIncrX();
         int incrY = direction.getIncrY();
@@ -43,18 +64,19 @@ public class Board implements Serializable {
         int originX = origin.getX();
         int originY = origin.getY();
 
+        // Getting next position
         int cursorX = originX + incrX;
         int cursorY = originY + incrY;
 
-        while (inBounds(cursorX, cursorY)) {
-
-            if (getPawn(cursorX, cursorY) != null) {
-                nextPoint = new Point(cursorX - incrX, cursorY - incrY);
-                break;
-            }
-
+        // Getting previous position
+        nextPoint = new Point(cursorX - incrX, cursorY - incrY);
+        while (inBounds(cursorX, cursorY) && getPawn(cursorX, cursorY) == null) { // Loop while we are in bounds and there is no pawn at the position
+            // Getting next position
             cursorX += incrX;
             cursorY += incrY;
+
+            // Getting next position
+            nextPoint = new Point(cursorX - incrX, cursorY - incrY);
         }
 
         return nextPoint;
@@ -74,7 +96,7 @@ public class Board implements Serializable {
 
         int index = direction.getIncrX() == 0 ? cursorY : cursorX;
         while (cursorX != originX && cursorY != originY) {
-            inDir[index] = BOARD[cursorX][cursorY];
+            inDir[index] = BOARD[cursorY][cursorX];
             cursorX += incrX;
             cursorY += incrY;
             index++;
@@ -99,32 +121,38 @@ public class Board implements Serializable {
     public Pawn getPawn(UUID uuid) {
         for (Pawn[] pawns : BOARD)
             for (Pawn pawn : pawns)
-                if (pawn.getUuid().equals(uuid))
+                if (pawn != null && pawn.getUuid().equals(uuid))
                     return pawn;
         return null;
     }
 
-    public void printBoard() {
+    public void printClientBoard() {
         // Print x axis
         String playerColor = GameSocketClient.getINSTANCE().getClientPlayerSocket().getPlayer().getColor();
-        GameLogger.log(playerColor + "Ceci est votre couleur" + "\u001B[0m");
-        GameLogger.log("    0 1 2 3 4");
+        GameLogger.log(playerColor + "Ceci est votre couleur" + AnsiColors.ANSI_RESET);
+        printServerBoard();
+    }
+
+    public void printServerBoard() {
+        // Print x axis
+//        GameLogger.log("Rev = " + rev);
+        GameLogger.log("    0  1  2  3  4");
 
         // Print actual board
-        GameLogger.log("   +=+=+=+=+=+");
+        GameLogger.log("   +==+==+==+==+==+");
         for (int i = 0; i < BOARD.length; i++) {
             StringBuilder line = new StringBuilder(" " + i + " |");
             for (int j = 0; j < BOARD[i].length; j++) {
                 Pawn pawn = BOARD[i][j];
                 if (pawn == null) {
-                    line.append(" |");
-                    continue;
+                    line.append("  |");
                 } else {
-                    line.append(pawn.getOwner().getColor()).append("x").append("\u001B[0m").append("|");
+                    line.append(pawn.getColor()).append(j).append(i).append(AnsiColors.ANSI_RESET).append("|");
                 }
             }
+
             GameLogger.log(line.toString());
-            GameLogger.log("   +=+=+=+=+=+");
+            GameLogger.log("   +==+==+==+==+==+");
         }
     }
 }

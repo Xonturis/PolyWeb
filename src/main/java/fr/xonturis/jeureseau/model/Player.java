@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Created by Xonturis on 5/29/2020.
  */
-public abstract class Player implements Serializable {
+public class Player implements Serializable {
 
     @Getter
     @Setter
@@ -20,6 +20,9 @@ public abstract class Player implements Serializable {
     @Setter
     @Getter
     private String color;
+
+    public Player() {
+    }
 
     public Player(String playerName) {
         this.playerName = playerName;
@@ -42,7 +45,7 @@ public abstract class Player implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Player)) return false;
 
         Player player = (Player) o;
 

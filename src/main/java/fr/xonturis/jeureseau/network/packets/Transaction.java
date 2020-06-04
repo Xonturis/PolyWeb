@@ -23,6 +23,7 @@ public class Transaction<T extends Serializable> extends Packet {
         this.transactionName = transactionName;
         this.callback = callback;
         setObject("uuid", uuid);
+        new TransactionPacketHandler();
     }
 
     public Transaction<T> answer(T answer) {

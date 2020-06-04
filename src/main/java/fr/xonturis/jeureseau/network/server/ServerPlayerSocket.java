@@ -2,9 +2,9 @@ package fr.xonturis.jeureseau.network.server;
 
 import fr.xonturis.jeureseau.Util.GameLogger;
 import fr.xonturis.jeureseau.model.Player;
+import fr.xonturis.jeureseau.network.PlayerSocket;
 import fr.xonturis.jeureseau.network.packets.NetworkHandler;
 import fr.xonturis.jeureseau.network.packets.Packet;
-import fr.xonturis.jeureseau.network.PlayerSocket;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -45,7 +45,6 @@ public class ServerPlayerSocket implements PlayerSocket, Runnable {
     @Override
     public void run() {
         ObjectInputStream objectInputStream;
-        this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
         GameLogger.log("Running connection");
         Packet received;
@@ -59,6 +58,8 @@ public class ServerPlayerSocket implements PlayerSocket, Runnable {
     @SneakyThrows
     @Override
     public void send(Packet packet) {
+        if (this.objectOutputStream == null)
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectOutputStream.writeObject(packet);
         objectOutputStream.flush();
     }

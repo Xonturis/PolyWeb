@@ -6,19 +6,19 @@ import fr.xonturis.jeureseau.network.server.PacketWrapper;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Xonturis on 5/31/2020.
  */
 public class NetworkHandler {
 
-    private static final List<PacketHandler> handlers = new ArrayList<>();
+    private static final List<PacketHandler> handlers = new CopyOnWriteArrayList<>();
 
     @SneakyThrows
-    public synchronized static void handle(PlayerSocket playerSocket, Packet packet) {
-        GameLogger.log("Received packet " + packet.getName());
+    public static void handle(PlayerSocket playerSocket, Packet packet) {
+        GameLogger.strongDebug("Received packet " + packet.getName());
         for (PacketHandler handler : handlers) {
             for (Method method : handler.getClass().getDeclaredMethods()) {
                 if (method.isAnnotationPresent(PacketType.class)) {

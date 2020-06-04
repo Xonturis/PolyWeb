@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.UUID;
 
 /**
  * Created by Xonturis on 5/29/2020.
@@ -34,7 +35,7 @@ public class GameSocketClient extends PacketHandler {
         try {
             Socket socket = new Socket(address, port);
             this.clientPlayerSocket = new ClientPlayerSocket(socket, player);
-            GameLogger.log("Connected");
+            GameLogger.debug("Connected");
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -45,8 +46,9 @@ public class GameSocketClient extends PacketHandler {
 
     @PacketType(packetName = "init")
     private void handleInitPacket(PacketWrapper packetWrapper) {
-        GameLogger.log("Received init");
+        GameLogger.debug("Received init");
         player.setColor((String) packetWrapper.getPacket().getObject("color"));
+        player.setUuid((UUID) packetWrapper.getPacket().getObject("uuid"));
     }
 
 }

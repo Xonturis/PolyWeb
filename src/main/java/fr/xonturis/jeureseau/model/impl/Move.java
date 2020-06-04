@@ -1,6 +1,5 @@
 package fr.xonturis.jeureseau.model.impl;
 
-import fr.xonturis.jeureseau.model.impl.Direction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,9 +12,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public final class Move implements Serializable {
 
+    public Move() {
+    }
+
     @Getter
-    private final UUID pawnUUID;
+    private UUID pawnUUID;
     @Getter
-    private final Direction direction;
+    private Direction direction;
 
 }

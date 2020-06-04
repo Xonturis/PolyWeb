@@ -14,12 +14,15 @@ public class CliController {
     private void registerListeners() {
         new RunningGamePhasePacketHandler();
         new PrintBoardPacketHandler();
+        new WinLoseHandler();
     }
 
     protected static String inputString() {
         Scanner sc = new Scanner(System.in);
-        String ret = sc.nextLine();
+        if (sc.hasNext()) {
+            return sc.nextLine();
+        }
         sc.close();
-        return ret;
+        return "";
     }
 }

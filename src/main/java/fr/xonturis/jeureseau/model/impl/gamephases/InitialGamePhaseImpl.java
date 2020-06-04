@@ -36,6 +36,9 @@ public class InitialGamePhaseImpl extends GamePhase {
             board.addPawn(pawn);
         }
 
+        Pawn neutron = new Pawn(null, new Point(2, 2)); // Le neutron
+        board.addPawn(neutron);
+
         GameLogger.log("InitialGamePhaseImpl end...");
         game.nextGamePhase();
         game.playGamePhase();
